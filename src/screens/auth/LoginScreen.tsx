@@ -17,8 +17,7 @@ export function LoginScreen() {
 
     const handle = async () => {
         try {
-            const result = await auth.signInWithEmailAndPassword(input.email, input.password)
-            console.log("Logged in as: ", result.user)
+            await auth.signInWithEmailAndPassword(input.email, input.password)
         } catch (err) {
             console.log(err)
             alert(err)

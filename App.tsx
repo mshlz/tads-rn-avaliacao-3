@@ -1,29 +1,38 @@
-import { useNavigation } from '@react-navigation/core'
+import * as React from "react"
+import 'react-native-gesture-handler'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import * as React from "react"
-import 'react-native-gesture-handler'
 import { useAuthentication } from './src/hooks/useAuthentication'
-import { LoginScreen } from './src/screens/auth/LoginScreen'
-import { RegisterScreen } from './src/screens/auth/RegisterScreen'
-import { HomeScreen } from './src/screens/HomeScreen'
+import { LoginScreen, RegisterScreen } from './src/screens/auth'
+import { BlankScreen, HomeScreen, MateusScreen } from './src/screens/app'
 
-const Stack = createStackNavigator();
+const students = {
+  "Mateus Soares Holzschuh": MateusScreen,
+  "Lucas Alves D'Ornellas Silva Pinto": null,
+  "Marco Antônio Acosta dos Santos": null,
+  "Lucas Antonio Pintos Bielemann": null,
+  "Álisson de Freitas Valadão": null,
+  "Kauan dos Santos Aguiar": null,
+  "Rodrigo Prola Sampei Paz": null,
+  "Leonardo Schuwarten Tateishi Arantes": null,
+  "Laura Soares Perera": null
+}
+
+const Drawer = createDrawerNavigator()
+const AppNavigator = (
+  <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Screen name="Home" component={HomeScreen} />
+    {Object.entries(students).map(([name, component]) => <Drawer.Screen key={name} name={name} component={component || BlankScreen} />)}
+  </Drawer.Navigator>
+)
+
+const Stack = createStackNavigator()
 const AuthNavigator = (
   <Stack.Navigator>
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
   </Stack.Navigator>
-)
-
-const Drawer = createDrawerNavigator()
-const AppNavigator = (
-  <Drawer.Navigator initialRouteName="Login">
-    <Drawer.Screen name="Home" component={HomeScreen} />
-    <Drawer.Screen name="Home@" component={HomeScreen} />
-    {/* <Drawer.Screen name="Notifications" component={NotificationsScreen} /> */}
-  </Drawer.Navigator>
 )
 
 export default function App() {
