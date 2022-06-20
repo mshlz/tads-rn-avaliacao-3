@@ -2,7 +2,7 @@ import React from 'react'
 import { auth, firebase } from '../firebase'
 
 export function useAuthentication() {
-  const [user, setUser] = React.useState<firebase.User>()
+  const [user, setUser] = React.useState<firebase.User>(auth.currentUser)
 
   React.useEffect(() => {
     const unsubscribeFromAuthStatuChanged = auth.onAuthStateChanged(user => {
