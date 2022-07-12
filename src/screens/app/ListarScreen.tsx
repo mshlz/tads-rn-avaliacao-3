@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
 import { firestore } from '../../firebase';
+import { useAuthentication } from '../../hooks/useAuthentication';
 
 export const ListarScreen = () => {
+  const { user } = useAuthentication()
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [gatos, setGatos] = useState([]); // Initial empty array of users
 
   useEffect(() => {
-    const subscriber = firestore.collection('Gato')
+    const subscriber = firestore.collection(`${user.uid}/animais/gatos`)
       .onSnapshot(querySnapshot => {
         const gatos = [];
         querySnapshot.forEach(documentSnapshot => {
@@ -27,15 +29,16 @@ export const ListarScreen = () => {
     return <ActivityIndicator />;
   }
 
-  const Item = ({ nome }) => (
+  const Item = ({ id, nome }) => (
     <View style={{ padding: 10, borderBottomWidth: 1 }}>
+      <Text style={{ fontSize: 10 }}>{id}</Text>
       <Text >{nome}</Text>
     </View>
   );
 
 
 
-  const renderItem = ({ item }) => <Item nome={item.nome} />;
+  const renderItem = ({ item }) => <Item nome={item.nome} id={item.uid} />;
 
   // const getGatos= ()=>{
   //   setGatos([]);
@@ -75,7 +78,7 @@ export const ListarScreen = () => {
       <FlatList
         data={gatos}
         renderItem={renderItem}
-        keyExtractor={item => item.nome}
+        keyExtractor={item => item.key}
       // refreshing={true}
       // onRefresh={() => {
       //   getGatos();
