@@ -18,6 +18,10 @@ export function DebugScreen() {
         text="Fechar"
         onPress={() => GateService.register("CLOSE").then(() => alert("Fechou"))}
       />
+      <Button
+        text="PRUNE"
+        onPress={() => GateService.remove(true).then(() => alert("PRUNE"))}
+      />
     </View>
   );
 }

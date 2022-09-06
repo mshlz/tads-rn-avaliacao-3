@@ -12,7 +12,7 @@ import GateService from "../../services/GateService";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
+    shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
@@ -27,7 +27,7 @@ export function HomeScreen() {
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setExpoPushToken(token);
-      GateService.sub(token as string, user.email).then(() => console.log("sub push token"));
+      GateService.sub(token as string, user.email).then(() => console.log("sub push token")).catch(console.error);
     });
 
     // This listener is fired whenever a notification is received while the app is foregrounded
