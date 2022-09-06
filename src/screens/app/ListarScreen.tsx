@@ -1,88 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
-import { firestore } from '../../firebase';
-import { useAuthentication } from '../../hooks/useAuthentication';
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
+import { Button } from "../../components/Button";
+import GateService from "../../services/GateService";
+import dayjs from "dayjs";
+import { decodeTime } from "ulid";
 
 export const ListarScreen = () => {
-  const { user } = useAuthentication()
-  const [loading, setLoading] = useState(true); // Set loading to true on component mount
-  const [gatos, setGatos] = useState([]); // Initial empty array of users
+  const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    const subscriber = firestore.collection(`${user.uid}/animais/gatos`)
-      .onSnapshot(querySnapshot => {
-        const gatos = [];
-        querySnapshot.forEach(documentSnapshot => {
-          gatos.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          })
-        })
-        setGatos(gatos);
-        setLoading(false);
-      })
-    // Unsubscribe from events when no longer in use
-    return () => subscriber()
+    fetchEntries();
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator />;
-  }
+  const fetchEntries = async () => {
+    setLoading(true);
+    GateService.getList()
+      .then((result) => {
+        setEntries(result.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+  };
 
-  const Item = ({ id, nome }) => (
+  const Item = ({ id, type }) => (
     <View style={{ padding: 10, borderBottomWidth: 1 }}>
       <Text style={{ fontSize: 10 }}>{id}</Text>
-      <Text >{nome}</Text>
+      <Text>
+        {dayjs(decodeTime(id)).format("DD/MM/YY HH:mm:ss")} - {type}
+      </Text>
     </View>
   );
 
-
-
-  const renderItem = ({ item }) => <Item nome={item.nome} id={item.uid} />;
-
-  // const getGatos= ()=>{
-  //   setGatos([]);
-  //   firestore
-  //   .collection('Gato')
-  //   .onSnapshot(querySnapshot=>{
-  //     //querySnapshot.forEach(documentSnapshot=>{
-  //     querySnapshot.docChanges().forEach(change=>{
-
-  //       gatos.push({...change.doc.data(),
-  //         key: change.nome,
-  //       });
-  //     });
-  //     setGatos(gatos);
-  //     // setCarregando(false);
-  //   });
-  //   // return()=>subscriber();
-  // };
-
-  // // const observador = firestore.collection('Gato')
-  // // .onSnapshot(querySnapshot => {
-  // //   querySnapshot.docChanges().forEach(change => {
-  // //     if (change.type === 'added') {
-  // //       console.log('Novo Gato: ', change.doc.data());
-  // //     }
-  // //     if (change.type === 'modified') {
-  // //       console.log('Gato modificado: ', change.doc.data());
-  // //     }
-  // //     if (change.type === 'removed') {
-  // //       console.log('Gato removido: ', change.doc.data());
-  // //     }
-  // //   });
-  // // });
+  const renderItem = ({ item }) => <Item type={item.type} id={item.id} />;
 
   return (
     <SafeAreaView>
+      <Button
+        text="Refresh"
+        onPress={() => fetchEntries()}
+        disabled={loading}
+      />
       <FlatList
-        data={gatos}
+        data={entries}
         renderItem={renderItem}
-        keyExtractor={item => item.key}
-      // refreshing={true}
-      // onRefresh={() => {
-      //   getGatos();
-      // }}
+        keyExtractor={(item) => item.id}
+        refreshing={loading}
+        onRefresh={() => {
+          fetchEntries();
+        }}
       />
     </SafeAreaView>
   );
