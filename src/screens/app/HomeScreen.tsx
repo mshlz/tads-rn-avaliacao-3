@@ -7,6 +7,7 @@ import { Button } from "../../components/Button";
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import GateService from "../../services/GateService";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,9 +25,10 @@ export function HomeScreen() {
   const responseListener = useRef<any>();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
+    registerForPushNotificationsAsync().then((token) => {
+      setExpoPushToken(token);
+      GateService.sub(token as string, user.email).then(() => console.log("sub push token"));
+    });
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
@@ -95,7 +97,7 @@ async function registerForPushNotificationsAsync() {
       alert("Failed to get push token for push notification!");
       return;
     }
-    token = (await Notifications.getDevicePushTokenAsync()).data;
+    token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log(token);
   } else {
     alert("Must use physical device for Push Notifications");

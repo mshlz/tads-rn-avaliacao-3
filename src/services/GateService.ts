@@ -45,6 +45,16 @@ class GateService {
 
     return result.message;
   }
+
+  public async sub(id: string | boolean, email: string) {
+    const result = (
+      await this.http.get("sub", {
+        params: { id, email },
+      })
+    ).data;
+
+    return result.message;
+  }
 }
 
 export default new GateService();

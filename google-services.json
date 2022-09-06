@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "397344116549",
+    "project_id": "lora-mshlz",
+    "storage_bucket": "lora-mshlz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397344116549:android:6c8f0ac4c986b3e9e0f82c",
+        "android_client_info": {
+          "package_name": "com.msjlz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397344116549-no01380ceoiqac7ern79jokdie8jj1jv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD17Qi2MgPgThT70Yx_KM6HgVtOxNDbZO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397344116549-no01380ceoiqac7ern79jokdie8jj1jv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
